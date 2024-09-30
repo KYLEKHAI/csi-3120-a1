@@ -60,7 +60,7 @@ class ParseTree:
 
 
 
-def parse_tokens(s_: str, association_type: Optional[str] = None) -> Union[List[str], bool]:
+def parse_tokens(s_: str) -> Union[List[str], bool]:
     """
     Gets the final tokens for valid strings as a list of strings, only for valid syntax,
     where tokens are (no whitespace included)
@@ -69,7 +69,6 @@ def parse_tokens(s_: str, association_type: Optional[str] = None) -> Union[List[
     opening and closing parenthesis
     Note that dots are replaced with corresponding parenthesis
     :param s_: the input string
-    :param association_type: If not None, add brackets to make expressions non-ambiguous
     :return: A List of tokens (strings) if a valid input, otherwise False
     """
 
@@ -85,7 +84,7 @@ def read_lines_from_txt_check_validity(fp: [str, os.PathLike]) -> None:
     parses each string  to yield a tokenized list of strings for printing, joined by _ characters
     In the case of a non-valid line, the corresponding error message is printed (not necessarily within
     this function, but possibly within the parse_tokens function).
-    :param lines: The file path of the lines to parse
+    :param fp: The file path of the lines to parse
     """
     lines = read_lines_from_txt(fp)
     valid_lines = []
@@ -115,18 +114,6 @@ def read_lines_from_txt_output_parse_tree(fp: [str, os.PathLike]) -> None:
             print("\n")
             parse_tree2 = build_parse_tree(tokens)
             parse_tree2.print_tree()
-
-
-def add_associativity(s_: List[str], association_type: str = "left") -> List[str]:
-    """
-    :param s_: A list of string tokens
-    :param association_type: a string in [`left`, `right`]
-    :return: List of strings, with added parenthesis that disambiguates the original expression
-    """
-
-    # TODO Optional
-    s = s_[:]  # Don't modify original string
-    return []
 
 
 
@@ -161,13 +148,3 @@ if __name__ == "__main__":
 
     print("Checking invalid examples...")
     read_lines_from_txt_check_validity(invalid_examples_fp)
-
-    # Optional
-    print("\n\nAssociation Examples:")
-    sample = ["a", "b", "c"]
-    print("Right association")
-    associated_sample_r = add_associativity(sample, association_type="right")
-    print(associated_sample_r)
-    print("Left association")
-    associated_sample_l = add_associativity(sample, association_type="left")
-    print(associated_sample_l)
