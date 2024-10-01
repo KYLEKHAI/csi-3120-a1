@@ -3,6 +3,8 @@
 ### Student numbers
 
 Kyle Khai Tran: 300302165
+<br>
+Dipak Chinnasamy Selvam: 300313402
 
 ### Information on whether the program works or has known defects
 
