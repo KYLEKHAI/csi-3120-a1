@@ -1,4 +1,3 @@
-
 import os
 from typing import Union, List, Optional
 
@@ -8,6 +7,8 @@ var_chars = alphabet_chars + numeric_chars
 all_valid_chars = var_chars + ["(", ")", ".", "\\"]
 valid_examples_fp = "./valid_examples.txt"
 invalid_examples_fp = "./invalid_examples.txt"
+extra_valid_examples_fp = "./extra_valid_examples.txt"
+extra_invalid_examples_fp = "./extra_invalid_examples.txt"
 
 def read_lines_from_txt(fp: [str, os.PathLike]) -> List[str]:
     """
@@ -47,7 +48,7 @@ def is_valid_var_name(s: str) -> bool:
     """
     # TODO
 
-    #Check if the variable name is valid according to the rules ofd lambda calculus
+    #Check if the variable name is valid according to the rules of lambda calculus
    
     # Check if the variable name is empty
     if len(s) == 0:
@@ -131,6 +132,9 @@ def parse_tokens(s_: str) -> Union[List[str], bool]:
     # Length of input
     length = len(s)
 
+    # Track the open parantheses count
+    openParenthesesCount = 0 
+
     while i < length:
         current_char = s[i]
 
@@ -146,26 +150,57 @@ def parse_tokens(s_: str) -> Union[List[str], bool]:
             if i < length and is_valid_var_name(s[i]):
                 token_list.append(s[i])
                 i += 1
+
+                # Check if the next character is a valid separator
+                if i < length and not s[i].isspace() and s[i] not in ["(", ")", ".", "\\"]:
+                    print(f"Invalid lambda expression at {i-2}.")
+                    return False
             else:
+                # Error validation 
+                if i < length and s[i].isspace():
+                    print(f"Invalid space inserted after \\ at index {i-1}.")
+                else:
+                    print(f"Backslashes not followed by a variable name at {i-1}.")
                 return False
 
-        # Parentheses
+        # Check for parentheses (open and close)
         elif current_char == "(":
             token_list.append(current_char)
+            openParenthesesCount += 1
             i += 1
 
+            # Error validation for missing expression after open parenthesis
+            if i < length and s[i] == ")":
+                print(f"Missing expression for parenthesis at index {i-1}.")
+                return False
+
         elif current_char == ")":
+            # Error validation
+            if openParenthesesCount == 0:
+                print(f"Bracket ) at index: {i} is not matched with an opening bracket '('.")
+                return False
+            
             token_list.append(current_char)
+            openParenthesesCount-= 1
             i += 1
 
         # Dot operator
-        elif current_char == ".":
 
+        elif current_char == ".":
+            # Error validation
+            if i == 0:
+            # Encountered dot at invalid index (error validation)
+                print(f"Encountered dot at invalid index {i}.")
+                return False
+            elif i > 0 and not is_valid_var_name(s[i - 1]):
+                print(f"Must have a variable name before character '.' at index {i-1}.")
+                return False
+          
             # Open parenthesis for the lambda body after the dot
             token_list.append("(")
             i += 1
 
-             # Skip whitespaces
+            # Skip whitespaces
             while i < length:
                 if s[i].isspace():
                     i += 1  
@@ -197,7 +232,16 @@ def parse_tokens(s_: str) -> Union[List[str], bool]:
 
         # Handle invalid characters
         else:
+            if current_char.isdigit():
+                print(f"Error at index {i}, variables cannot begin with digits.")
+            else:
+                print(f"Error at index {i} with invalid character {current_char}.")
             return False
+
+    # Check unmatched opening parentheses
+    if openParenthesesCount > 0:
+        print(f"Bracket ( at index: {s.find('(')} is not matched with a closing bracket ')'.")
+        return False
 
     return token_list if token_list else False
 
@@ -312,6 +356,13 @@ if __name__ == "__main__":
     print("\n\nChecking valid examples...")
     read_lines_from_txt_check_validity(valid_examples_fp)
     read_lines_from_txt_output_parse_tree(valid_examples_fp)
+    
+    print("\n\nChecking extra valid examples...")
+    read_lines_from_txt_check_validity(extra_valid_examples_fp)
+    read_lines_from_txt_output_parse_tree(extra_valid_examples_fp)
 
     print("Checking invalid examples...")
     read_lines_from_txt_check_validity(invalid_examples_fp)
+
+    print("Checking extra invalid examples...")
+    read_lines_from_txt_check_validity(extra_invalid_examples_fp)
