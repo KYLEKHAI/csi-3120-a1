@@ -1,0 +1,17 @@
+Examples:
+Valid Examples:
+ (A B)
+ abc
+ a b c
+ a (b c)
+ (\x a b)
+ \x. a b
+ (\x((a) (b)))
+Invalid Examples:
+ \ (missing variable after lambda).
+ \x (missing expression after lambda abstraction).
+ ((x (missing closing parenthesis).
+ () (missing expression).
+CSI3120 – Fall 2024 – Prof Karim Alghoul
+ a (b (missing closing parenthesis).
+ a (b c)) (input not fully parsed).
