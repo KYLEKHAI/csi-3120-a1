@@ -71,8 +71,8 @@ class Node:
     """
     Nodes in a parse tree
     Attributes:
-        elem: a list of strings
-        children: a list of child nodes
+    elem: a list of strings
+    children: a list of child nodes
     """
     def __init__(self, elem: List[str] = None):
         self.elem = elem
@@ -87,7 +87,7 @@ class ParseTree:
     """
     A full parse tree, with nodes
     Attributes:
-        root: the root of the tree
+    root: the root of the tree
     """
     def __init__(self, root):
         self.root = root
@@ -366,3 +366,5 @@ if __name__ == "__main__":
 
     print("Checking extra invalid examples...")
     read_lines_from_txt_check_validity(extra_invalid_examples_fp)
+
+    
